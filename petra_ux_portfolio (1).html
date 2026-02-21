@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petra Visitor Experience Research | Laura Findlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #C1440E;
+    --sandstone: #D4845A;
+    --warm: #E8B88A;
+    --pale: #F5E6D3;
+    --deep: #2A1208;
+    --ink: #3D1F0F;
+    --gold: #B8860B;
+    --sky: #8BB8C8;
+    --sage: #7A9E7E;
+    --cream: #FAF3EB;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--rose);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--sandstone);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.08s ease, width 0.2s, height 0.2s;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+  }
+  body:has(a:hover) .cursor, body:has(button:hover) .cursor { transform: translate(-50%,-50%) scale(2); background: var(--gold); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(250,243,235,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(193,68,14,0.15);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--rose);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--rose); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    background: var(--deep);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 6rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-texture {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 80%, rgba(193,68,14,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(212,132,90,0.2) 0%, transparent 50%);
+  }
+  /* Animated rock layers */
+  .rock-layers {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+    overflow: hidden;
+  }
+  .rock-layer {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    border-radius: 60% 40% 0 0 / 20px 20px 0 0;
+    animation: rockFloat 8s ease-in-out infinite;
+  }
+  .rock-layer:nth-child(1) { height: 80px; background: rgba(193,68,14,0.4); animation-delay: 0s; }
+  .rock-layer:nth-child(2) { height: 55px; background: rgba(212,132,90,0.3); animation-delay: 1s; border-radius: 70% 30% 0 0 / 15px 15px 0 0; }
+  .rock-layer:nth-child(3) { height: 35px; background: rgba(232,184,138,0.2); animation-delay: 2s; border-radius: 50% 50% 0 0 / 10px 10px 0 0; }
+  @keyframes rockFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+  .hero-eyebrow {
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--sandstone); margin-bottom: 1.5rem; position: relative; z-index: 2;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    line-height: 1.05;
+    color: var(--pale);
+    position: relative; z-index: 2;
+    font-weight: 300;
+  }
+  .hero-title em { color: var(--sandstone); font-style: italic; }
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: rgba(245,230,211,0.65);
+    line-height: 1.7;
+    max-width: 400px;
+    position: relative; z-index: 2;
+  }
+  .hero-meta {
+    margin-top: 3rem;
+    display: flex; gap: 2rem;
+    position: relative; z-index: 2;
+  }
+  .hero-meta-item { border-left: 2px solid var(--rose); padding-left: 1rem; }
+  .hero-meta-item .val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 600;
+    color: var(--warm);
+  }
+  .hero-meta-item .label {
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(245,230,211,0.5);
+  }
+
+  .hero-right {
+    background: var(--pale);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6rem 4rem;
+    position: relative;
+  }
+  /* Petra arch SVG illustration */
+  .petra-illustration {
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: 100%; opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .hero-about-label {
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--sandstone); margin-bottom: 1rem;
+  }
+  .hero-about-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem; font-weight: 300; color: var(--deep);
+    line-height: 1.2; margin-bottom: 1.5rem;
+  }
+  .hero-about-text {
+    font-size: 0.95rem; line-height: 1.8; color: var(--ink);
+    max-width: 420px; margin-bottom: 2rem;
+  }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+  .tag {
+    padding: 0.4rem 1rem;
+    background: white;
+    border: 1px solid rgba(193,68,14,0.2);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    color: var(--rose);
+    letter-spacing: 0.05em;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.9rem 2rem;
+    background: var(--rose);
+    color: white;
+    border: none; border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; letter-spacing: 0.05em;
+    cursor: none; text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn:hover { background: var(--deep); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--rose);
+    color: var(--rose);
+    margin-left: 1rem;
+  }
+  .btn-outline:hover { background: var(--rose); color: white; }
+
+  /* SECTIONS */
+  section { padding: 6rem 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+  .section-label {
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--sandstone); margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300; color: var(--deep);
+    line-height: 1.2; margin-bottom: 1.5rem;
+  }
+  .section-title em { color: var(--rose); font-style: italic; }
+  .section-intro {
+    font-size: 1rem; line-height: 1.8; color: var(--ink);
+    max-width: 680px; margin-bottom: 3rem;
+  }
+
+  /* STATS SECTION */
+  .stats-section { background: var(--deep); color: var(--pale); }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 3rem;
+  }
+  .stat-card {
+    padding: 3rem 2rem;
+    background: var(--deep);
+    text-align: center;
+    transition: background 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: var(--rose);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .stat-card:hover::before { transform: scaleX(1); }
+  .stat-card:hover { background: rgba(193,68,14,0.15); }
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 600;
+    color: var(--warm);
+    display: block;
+    animation: countUp 1.5s ease forwards;
+  }
+  .stat-label {
+    font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(245,230,211,0.5); margin-top: 0.5rem;
+  }
+  .stat-note { font-size: 0.8rem; color: rgba(245,230,211,0.4); margin-top: 0.3rem; }
+
+  /* FINDINGS */
+  .findings-section { background: var(--cream); }
+  .findings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 3rem; }
+  .finding-card {
+    background: white;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: none;
+  }
+  .finding-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--rose), var(--sandstone));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .finding-card:hover::after { transform: scaleX(1); }
+  .finding-card:hover { transform: translateY(-4px); }
+  .finding-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem; font-weight: 300;
+    color: rgba(193,68,14,0.1);
+    position: absolute; top: 1rem; right: 2rem;
+    line-height: 1;
+  }
+  .finding-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .finding-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 600;
+    color: var(--deep); margin-bottom: 1rem;
+  }
+  .finding-text { font-size: 0.9rem; line-height: 1.8; color: #5a3a2a; }
+  .finding-highlight {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 600;
+    color: var(--rose);
+    margin: 0.5rem 0;
+  }
+
+  /* CHART BARS */
+  .chart-section { background: white; }
+  .chart-wrap { margin-top: 3rem; }
+  .chart-row {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem;
+    opacity: 0; transform: translateX(-20px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .chart-row.visible { opacity: 1; transform: translateX(0); }
+  .chart-label { font-size: 0.85rem; width: 200px; flex-shrink: 0; color: var(--ink); }
+  .chart-bar-wrap { flex: 1; background: var(--pale); height: 36px; border-radius: 2px; overflow: hidden; }
+  .chart-bar {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--rose), var(--sandstone));
+    width: 0;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    display: flex; align-items: center; justify-content: flex-end; padding-right: 0.6rem;
+  }
+  .chart-bar span { font-size: 0.75rem; font-weight: 500; color: white; white-space: nowrap; }
+  .chart-val { font-size: 0.85rem; color: var(--rose); font-weight: 500; width: 60px; text-align: right; flex-shrink: 0; }
+
+  /* SATISFACTION COMPARISON */
+  .comparison-section { background: var(--pale); }
+  .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+  .comparison-card {
+    background: white;
+    border-radius: 4px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 4px 40px rgba(42,18,8,0.06);
+  }
+  .score-ring {
+    width: 180px; height: 180px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .score-text {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .score-text .big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem; font-weight: 600; color: var(--deep);
+    line-height: 1;
+  }
+  .score-text .small { font-size: 0.75rem; color: #999; margin-top: 0.2rem; }
+  .comparison-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; color: var(--deep); margin-bottom: 0.5rem;
+  }
+  .comparison-note { font-size: 0.85rem; color: #888; line-height: 1.6; }
+
+  /* TRANSPORT SPLIT */
+  .transport-split {
+    display: flex; gap: 1px; margin-top: 2rem; height: 80px; border-radius: 4px; overflow: hidden;
+  }
+  .transport-foot {
+    background: linear-gradient(135deg, var(--rose), var(--sandstone));
+    flex: 82; display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.85rem; font-weight: 500;
+  }
+  .transport-donkey {
+    background: var(--gold);
+    flex: 18; display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.85rem; font-weight: 500;
+  }
+
+  /* QUOTES */
+  .quotes-section { background: var(--deep); overflow: hidden; }
+  .quotes-track {
+    display: flex; gap: 2rem; margin-top: 3rem;
+    overflow-x: auto; padding-bottom: 1.5rem;
+    scrollbar-width: thin; scrollbar-color: var(--rose) transparent;
+    scroll-snap-type: x mandatory;
+  }
+  .quote-card {
+    flex-shrink: 0; width: 380px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(193,68,14,0.3);
+    border-radius: 4px; padding: 2.5rem;
+    scroll-snap-align: start;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .quote-card:hover { border-color: var(--sandstone); background: rgba(255,255,255,0.1); }
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem; color: var(--rose); line-height: 0.5;
+    margin-bottom: 1rem; display: block;
+  }
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-style: italic;
+    color: var(--pale); line-height: 1.6;
+  }
+  .quote-category {
+    margin-top: 1.5rem;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--sandstone);
+  }
+
+  /* RECOMMENDATIONS */
+  .recs-section { background: var(--cream); }
+  .recs-grid { margin-top: 3rem; display: flex; flex-direction: column; gap: 1px; }
+  .rec-item {
+    display: grid; grid-template-columns: 80px 120px 1fr;
+    background: white; gap: 0;
+    transition: transform 0.2s;
+    cursor: none;
+  }
+  .rec-item:hover { transform: translateX(6px); }
+  .rec-priority {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 600; color: white; writing-mode: vertical-rl;
+    text-orientation: mixed; padding: 1.5rem 0;
+  }
+  .priority-high { background: var(--rose); }
+  .priority-med { background: var(--sandstone); }
+  .priority-low { background: var(--gold); }
+  .rec-num {
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem; font-weight: 300; color: rgba(193,68,14,0.2);
+    border-right: 1px solid var(--pale);
+  }
+  .rec-content { padding: 2rem 2.5rem; }
+  .rec-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--deep); margin-bottom: 0.6rem;
+  }
+  .rec-text { font-size: 0.88rem; line-height: 1.8; color: #5a3a2a; }
+
+  /* GAME SECTION */
+  .game-section { background: var(--deep); padding: 6rem 0; }
+  .game-intro { color: var(--pale); max-width: 600px; }
+  .game-wrap {
+    margin-top: 3rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(193,68,14,0.3);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .game-header {
+    background: rgba(193,68,14,0.2);
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .game-title-bar {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; color: var(--pale);
+  }
+  .game-stats-bar { display: flex; gap: 2rem; }
+  .game-stat { font-size: 0.8rem; color: var(--warm); }
+  .game-stat span { font-weight: 600; }
+  canvas#gameCanvas {
+    display: block; width: 100%;
+    background: #1a0a04;
+  }
+  .game-controls {
+    padding: 1rem 2rem;
+    display: flex; gap: 1rem; align-items: center;
+    background: rgba(0,0,0,0.3);
+  }
+  .game-btn {
+    padding: 0.6rem 1.5rem;
+    background: var(--rose);
+    color: white; border: none; border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; cursor: none;
+    transition: background 0.2s;
+  }
+  .game-btn:hover { background: var(--sandstone); }
+  .game-hint { font-size: 0.8rem; color: rgba(245,230,211,0.5); }
+
+  /* METHODOLOGY */
+  .method-section { background: white; }
+  .method-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 3rem; }
+  .method-card {
+    padding: 2.5rem;
+    border-top: 3px solid var(--pale);
+    transition: border-color 0.3s;
+  }
+  .method-card:hover { border-color: var(--rose); }
+  .method-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .method-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; color: var(--deep);
+    margin-bottom: 0.8rem; font-weight: 600;
+  }
+  .method-text { font-size: 0.88rem; line-height: 1.8; color: #5a3a2a; }
+
+  /* FOOTER */
+  footer {
+    background: var(--deep);
+    padding: 4rem 3rem;
+    text-align: center;
+  }
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; color: var(--pale);
+    margin-bottom: 0.5rem;
+  }
+  .footer-role { font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sandstone); }
+  .footer-note { margin-top: 2rem; font-size: 0.8rem; color: rgba(245,230,211,0.3); }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* AWARENESS SPLIT VIZ */
+  .awareness-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2rem; }
+  .awareness-item { }
+  .awareness-pct {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem; font-weight: 600;
+    line-height: 1;
+  }
+  .aware-yes { color: var(--rose); }
+  .aware-no { color: var(--deep); }
+  .awareness-label { font-size: 0.85rem; color: #888; margin-top: 0.3rem; }
+  .awareness-sub { font-size: 0.8rem; color: #aaa; margin-top: 0.2rem; line-height: 1.5; }
+
+  /* PDTRA badge */
+  .pdtra-badge {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(193,68,14,0.1);
+    border: 1px solid rgba(193,68,14,0.2);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    color: var(--rose);
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+  }
+  .pdtra-dot { width: 8px; height: 8px; background: var(--rose); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .findings-grid { grid-template-columns: 1fr; }
+    .comparison-grid { grid-template-columns: 1fr; }
+    .method-grid { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.5rem; }
+    .rec-item { grid-template-columns: 60px 80px 1fr; }
+  }
+
+  .char-btn {
+    padding: 0.5rem 1.1rem;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(193,68,14,0.3);
+    border-radius: 6px;
+    color: var(--pale);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .char-btn:hover { background: rgba(193,68,14,0.2); border-color: var(--sandstone); }
+  .char-btn.active { background: var(--rose); border-color: var(--rose); color: white; }
+
+  /* ================================================
+     MOBILE RESPONSIVE — all changes scoped to max-width: 768px
+     Desktop layout completely untouched
+  ================================================ */
+  @media (max-width: 768px) {
+
+    /* Hide custom cursor on touch devices */
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
+
+    /* NAV */
+    nav { padding: 1rem 1.2rem; }
+    .nav-links { gap: 1rem; }
+    .nav-links li:nth-child(n+4) { display: none; } /* hide overflow links */
+    .nav-logo { font-size: 1rem; }
+
+    /* HERO — stack vertically */
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    .hero-left {
+      padding: 5rem 1.5rem 3rem;
+      min-height: 60vw;
+    }
+    .hero-title { font-size: clamp(2.2rem, 8vw, 3.2rem); }
+    .hero-right { padding: 2.5rem 1.5rem; }
+    .hero-about-title { font-size: 1.8rem; }
+    .hero-meta { gap: 1rem; flex-wrap: wrap; }
+
+    /* GENERAL SECTION SPACING */
+    .container { padding: 0 1.2rem; }
+    .section-title { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+    .section-intro { font-size: 0.9rem; }
+
+    /* STATS / FINDINGS GRIDS */
+    .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 0.8rem !important; }
+    .findings-grid { grid-template-columns: 1fr !important; }
+    .method-grid { grid-template-columns: 1fr !important; }
+    .data-grid { grid-template-columns: 1fr !important; }
+    .rings-row { flex-direction: column; align-items: center; gap: 1.5rem !important; }
+    .rec-grid { grid-template-columns: 1fr !important; }
+    .quotes-scroll { flex-direction: column !important; overflow-x: visible !important; }
+    .quote-card { min-width: unset !important; width: 100% !important; }
+
+    /* GAME SECTION */
+    .game-section { padding: 3rem 0; }
+    .game-wrap { overflow: hidden; }
+
+    /* Scale canvas to fit mobile — preserve aspect ratio */
+    #gameCanvas {
+      width: 100% !important;
+      height: auto !important;
+      display: block;
+      touch-action: none; /* prevent scroll hijack */
+    }
+
+    /* Compact game header */
+    .game-header { flex-direction: column; gap: 0.4rem; }
+    .game-stats-bar { gap: 0.8rem; font-size: 0.75rem; }
+
+    /* Character select — wrap nicely */
+    #charSelect .char-btn { font-size: 0.75rem; padding: 0.4rem 0.8rem; }
+
+    /* Hide keyboard hint on mobile */
+    .game-hint { display: none; }
+
+    /* TOUCH D-PAD — shown only on mobile */
+    .touch-dpad { display: flex !important; }
+
+    /* Acknowledgements grid */
+    .ack-grid { grid-template-columns: 1fr !important; }
+
+    /* Footer */
+    footer { padding: 2.5rem 1.2rem; text-align: center; }
+    .footer-role { letter-spacing: 0.05em; font-size: 0.7rem; }
+
+    /* Reduce hero illustration opacity on mobile for readability */
+    .petra-illustration { opacity: 0.04; }
+
+    /* PDTRA badge wraps */
+    .pdtra-badge { font-size: 0.75rem; flex-wrap: wrap; }
+  }
+
+  /* TOUCH D-PAD — hidden on desktop */
+  .touch-dpad {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 8px 6px;
+    background: rgba(30,12,4,0.92);
+    border-top: 1px solid rgba(193,68,14,0.35);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+  /* Movement zone: two halves, tap or hold left/right */
+  .dpad-move-zone {
+    display: flex;
+    flex: 1;
+    height: 72px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid rgba(193,68,14,0.45);
+    touch-action: none;
+  }
+  .dpad-move-half {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 1.3rem; gap: 2px;
+    background: rgba(193,68,14,0.18);
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    transition: background 0.08s;
+  }
+  .dpad-move-half:first-child { border-right: 1px solid rgba(193,68,14,0.3); }
+  .dpad-move-half:active, .dpad-move-half.pressed { background: rgba(193,68,14,0.55); }
+  /* Action buttons column: jump + duck stacked */
+  .dpad-action-col {
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .dpad-btn {
+    width: 58px; height: 33px;
+    background: rgba(193,68,14,0.22);
+    border: 1.5px solid rgba(193,68,14,0.5);
+    border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 1rem; gap: 1px;
+    color: var(--pale);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.08s;
+    touch-action: none;
+  }
+  .dpad-jump { background: rgba(39,174,96,0.2); border-color: rgba(39,174,96,0.5); }
+  .dpad-duck { background: rgba(46,134,171,0.2); border-color: rgba(46,134,171,0.5); }
+  .dpad-btn:active, .dpad-btn.pressed { background: rgba(193,68,14,0.6) !important; border-color: var(--rose) !important; }
+  .dpad-jump.pressed { background: rgba(39,174,96,0.6) !important; }
+  .dpad-duck.pressed { background: rgba(46,134,171,0.6) !important; }
+  .dpad-game-btns {
+    display: flex; flex-direction: column; gap: 5px; align-items: center;
+  }
+  .dpad-label {
+    font-size: 0.48rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(212,132,90,0.55); text-align: center;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">Laura Findlay</div>
+  <ul class="nav-links">
+    <li><a href="#findings">Findings</a></li>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#recommendations">Recommendations</a></li>
+    <li><a href="#game">Try the Game</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-texture"></div>
+    <div class="rock-layers">
+      <div class="rock-layer"></div>
+      <div class="rock-layer"></div>
+      <div class="rock-layer"></div>
+    </div>
+    <div class="hero-eyebrow">UX Field Research · Petra, Jordan · February 2026</div>
+    <h1 class="hero-title">
+      Visitor Experience<br>at <em>Petra</em><br>Archaeological Park
+    </h1>
+    <p class="hero-sub">A field-based UX research study examining the visitor journey from the Treasury to the shuttle bus stop, and what it reveals about service design at one of the world’s great heritage sites.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="val">246</span>
+        <span class="label">Responses</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="val">40+</span>
+        <span class="label">Nationalities</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="val">9</span>
+        <span class="label">Recommendations</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <svg class="petra-illustration" viewBox="0 0 500 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Stylised Treasury silhouette -->
+      <rect x="180" y="300" width="140" height="200" fill="#C1440E" opacity="0.5"/>
+      <polygon points="180,300 250,200 320,300" fill="#C1440E" opacity="0.5"/>
+      <rect x="200" y="240" width="100" height="60" fill="#C1440E" opacity="0.3"/>
+      <circle cx="250" cy="220" r="20" fill="#C1440E" opacity="0.3"/>
+      <rect x="210" y="380" width="30" height="120" fill="#2A1208" opacity="0.5"/>
+      <rect x="260" y="380" width="30" height="120" fill="#2A1208" opacity="0.5"/>
+      <rect x="230" y="420" width="40" height="80" fill="#C1440E" opacity="0.2"/>
+      <!-- Columns -->
+      <rect x="195" y="300" width="12" height="80" fill="#D4845A" opacity="0.4"/>
+      <rect x="220" y="300" width="12" height="80" fill="#D4845A" opacity="0.4"/>
+      <rect x="268" y="300" width="12" height="80" fill="#D4845A" opacity="0.4"/>
+      <rect x="293" y="300" width="12" height="80" fill="#D4845A" opacity="0.4"/>
+    </svg>
+
+    <div class="pdtra-badge">
+      <div class="pdtra-dot"></div>
+      Entrusted by PDTRA · Chief Commissioner Dr. Fares Braizat & Commissioner Yazan Mahadin
+    </div>
+
+    <div class="hero-about-label">About This Study</div>
+    <h2 class="hero-about-title">One of the world's great sites — and a service design opportunity</h2>
+    <p class="hero-about-text">Petra draws visitors from across the globe to witness its rose-red sandstone canyons and ancient Nabataean architecture. But the visitor journey doesn't end at the Treasury. This study used in-field surveys to understand how that journey concludes and where the service environment is letting visitors down.</p>
+
+    <div class="hero-tags">
+      <span class="tag">UX Research</span>
+      <span class="tag">Service Design</span>
+      <span class="tag">Archaeology</span>
+      <span class="tag">Visual Anthropology</span>
+      <span class="tag">Heritage Tourism</span>
+      <span class="tag">Filmmaking</span>
+      <span class="tag">Wayfinding</span>
+      <span class="tag">Mixed Methods</span>
+    </div>
+
+    <div>
+      <a href="#findings" class="btn">Explore the Findings ↓</a>
+      <a href="#game" class="btn btn-outline">Play the Game</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section" id="stats">
+  <div class="container">
+    <div class="section-label">At a Glance</div>
+    <h2 class="section-title" style="color:var(--pale)">The numbers tell a <em style="color:var(--sandstone)">clear story</em></h2>
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <span class="stat-number">8.9<span style="font-size:1.5rem">/10</span></span>
+        <div class="stat-label">Overall Experience Score</div>
+        <div class="stat-note">avg. across 246 respondents</div>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-number">6.3<span style="font-size:1.5rem">/10</span></span>
+        <div class="stat-label">Bus Journey Satisfaction</div>
+        <div class="stat-note">a 2.6 point gap, entirely avoidable</div>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-number">57<span style="font-size:1.5rem">%</span></span>
+        <div class="stat-label">Unaware of Last Bus Time</div>
+        <div class="stat-note">navigating without key information</div>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-number">88<span style="font-size:1.5rem">%</span></span>
+        <div class="stat-label">Rated Overall Experience 8–10</div>
+        <div class="stat-note">the site itself is exceptional</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINDINGS -->
+<section class="findings-section" id="findings">
+  <div class="container">
+    <div class="section-label">Key Findings</div>
+    <h2 class="section-title">What the data <em>revealed</em></h2>
+    <p class="section-intro">Four findings emerged from the survey data, each pointing to a different dimension of the visitor experience, each requiring a different type of service design intervention.</p>
+
+    <div class="findings-grid">
+      <div class="finding-card reveal">
+        <div class="finding-num">01</div>
+        <div class="finding-icon">🏛️</div>
+        <div class="finding-title">Petra itself is exceptional</div>
+        <div class="finding-text">
+          <span class="finding-highlight">8.9 / 10</span><br>
+          88% of visitors gave the overall experience a score of 8 or above. Only 2% rated it 5 or below. The site's extraordinary heritage is not the problem. The service environment surrounding it is.
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <div class="finding-num">02</div>
+        <div class="finding-icon">🚌</div>
+        <div class="finding-title">The bus journey is a pain point</div>
+        <div class="finding-text">
+          <span class="finding-highlight">6.3 / 10</span><br>
+          The basin-to-bus journey scored 2.6 points lower than the overall experience. 36% rated it 5 or below. Critically: visitors who took a donkey ride scored it <strong>8.25/10</strong> vs. walkers at just <strong>5.91/10</strong>. The walk, not the service, is the problem.
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <div class="finding-num">03</div>
+        <div class="finding-icon">🗺️</div>
+        <div class="finding-title">Visitors are flying blind</div>
+        <div class="finding-text">
+          <span class="finding-highlight">57%</span><br>
+          of visitors didn't know the last bus departure time. Of those who did (43%), some likely had incorrect information from informal sources. Word of mouth was the #1 discovery channel — ahead of official signs. Visitors shouldn't rely on strangers to find a bus.
+        </div>
+      </div>
+      <div class="finding-card reveal">
+        <div class="finding-num">04</div>
+        <div class="finding-icon">🫏</div>
+        <div class="finding-title">Operators are filling the gap, badly</div>
+        <div class="finding-text">
+          <span class="finding-highlight">19 mentions</span><br>
+          Donkey operators were cited as a discovery channel for the shuttle bus — above hotels. These same operators profit from discouraging visitors from walking, and frequently provide false distance estimates. A conflict of interest is embedded in the information chain.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA VISUALISATIONS -->
+<section class="chart-section" id="data">
+  <div class="container">
+    <div class="section-label">Data Deep Dive</div>
+    <h2 class="section-title">How visitors <em>discovered</em> the bus</h2>
+    <p class="section-intro">262 mentions recorded across 246 respondents, adjusted for split responses. Word of mouth edges out signage as the leading channel, revealing an informal, uncontrolled information ecosystem.</p>
+
+    <div class="chart-wrap" id="discoveryChart">
+      <div class="chart-row">
+        <div class="chart-label">Word of Mouth</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="100"><span>64 responses · 24.4%</span></div></div>
+        <div class="chart-val">24.4%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">On-Site Signs</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="98"><span>63 responses · 24.0%</span></div></div>
+        <div class="chart-val">24.0%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">Visitor Centre</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="53"><span>34 responses · 13.0%</span></div></div>
+        <div class="chart-val">13.0%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">Guide</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="42"><span>27 responses · 10.3%</span></div></div>
+        <div class="chart-val">10.3%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">Internet / Online</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="37"><span>24 responses · 9.2%</span></div></div>
+        <div class="chart-val">9.2%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">Locals / Donkey Operators</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="30" style="background:linear-gradient(90deg,#B8860B,#D4A017)"><span>19 responses · 7.3%</span></div></div>
+        <div class="chart-val" style="color:var(--gold)">7.3%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">Hotel / Accommodation</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="20"><span>13 responses · 5.0%</span></div></div>
+        <div class="chart-val">5.0%</div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-label">Map</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" data-pct="12"><span>8 responses · 3.1%</span></div></div>
+        <div class="chart-val">3.1%</div>
+      </div>
+    </div>
+
+    <!-- Satisfaction comparison -->
+    <div style="margin-top:5rem">
+      <h2 class="section-title">Satisfaction by <em>transport mode</em></h2>
+      <p class="section-intro">The 2.34-point gap between walkers and donkey riders is the most actionable data point in the study. It shows the route is the problem, not the service.</p>
+      <div class="comparison-grid">
+        <div class="comparison-card reveal">
+          <div class="score-ring">
+            <svg width="180" height="180" viewBox="0 0 180 180">
+              <circle cx="90" cy="90" r="75" stroke="#f0e0d0" stroke-width="12" fill="none"/>
+              <circle cx="90" cy="90" r="75" stroke="#C1440E" stroke-width="12" fill="none"
+                stroke-dasharray="471" stroke-dashoffset="88" stroke-linecap="round"
+                style="transition:stroke-dashoffset 1.5s ease" id="ring1"/>
+            </svg>
+            <div class="score-text">
+              <span class="big">5.91</span>
+              <span class="small">out of 10</span>
+            </div>
+          </div>
+          <div class="comparison-title">Visitors who walked</div>
+          <p class="comparison-note">82% of respondents · 202 visitors<br>41% rated the journey 5 or below</p>
+          <div class="transport-split" style="height:50px;margin-top:1.5rem">
+            <div class="transport-foot" style="flex:82;font-size:0.75rem">82% walked</div>
+          </div>
+        </div>
+        <div class="comparison-card reveal">
+          <div class="score-ring">
+            <svg width="180" height="180" viewBox="0 0 180 180">
+              <circle cx="90" cy="90" r="75" stroke="#f0e0d0" stroke-width="12" fill="none"/>
+              <circle cx="90" cy="90" r="75" stroke="#7A9E7E" stroke-width="12" fill="none"
+                stroke-dasharray="471" stroke-dashoffset="83" stroke-linecap="round"
+                style="transition:stroke-dashoffset 1.5s ease" id="ring2"/>
+            </svg>
+            <div class="score-text">
+              <span class="big" style="color:var(--sage)">8.25</span>
+              <span class="small">out of 10</span>
+            </div>
+          </div>
+          <div class="comparison-title">Visitors who took a donkey</div>
+          <p class="comparison-note">18% of respondents · 44 visitors<br>68% rated the journey 8 or above</p>
+          <div class="transport-split" style="height:50px;margin-top:1.5rem">
+            <div class="transport-donkey" style="flex:1;font-size:0.75rem">18% donkey</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Awareness -->
+    <div style="margin-top:5rem" class="reveal">
+      <h2 class="section-title">Bus schedule <em>awareness</em></h2>
+      <div class="awareness-bars">
+        <div class="awareness-item">
+          <div class="awareness-pct aware-no">57%</div>
+          <div class="awareness-label">Did not know the last departure time</div>
+          <div class="awareness-sub">140 visitors navigating the most time-sensitive moment of their visit without basic scheduling information</div>
+        </div>
+        <div class="awareness-item">
+          <div class="awareness-pct aware-yes">43%</div>
+          <div class="awareness-label">Had some awareness of departure time</div>
+          <div class="awareness-sub">But accuracy was not verified. Anecdotal evidence suggests a portion had incorrect times from informal sources</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section class="quotes-section">
+  <div class="container">
+    <div class="section-label" style="color:var(--sandstone)">Visitor Voices</div>
+    <h2 class="section-title" style="color:var(--pale)">In their own <em style="color:var(--sandstone)">words</em></h2>
+    <p class="section-intro" style="color:rgba(245,230,211,0.6)">Scroll to read direct quotes from the field, reproduced verbatim from survey responses.</p>
+  </div>
+  <div class="quotes-track" style="padding: 0 3rem">
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">Too far, no signs, and the locals tell you it's even further.</p>
+      <div class="quote-category">🗺️ Wayfinding & Misinformation</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">We waited 25 minutes at the wrong stop. There was nothing telling us where the actual bus stop was.</p>
+      <div class="quote-category">🚌 Signage Failure</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">The donkey guys told us there was no bus and tried to charge us. The walk was fine once we found it.</p>
+      <div class="quote-category">🫏 Operator Misinformation</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">Not logical. The bus stop doesn't go all the way to the basin. Needs to be closer or better marked.</p>
+      <div class="quote-category">📍 Route Design</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">My husband is in a wheelchair. The rough road was very difficult and there was no support.</p>
+      <div class="quote-category">♿ Accessibility</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">Petra by night is expensive and the shuttle bus is expensive. Sellers are pushy.</p>
+      <div class="quote-category">💰 Vendor Conduct</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">The government pushing out locals is unappealing. The animal welfare is bad.</p>
+      <div class="quote-category">🐾 Animal Welfare</div>
+    </div>
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">Manipulation from locals. Donkeys need better signage for ETA to bus stop so that they don't feel pressured into getting a donkey.</p>
+      <div class="quote-category">🫏 Operator Conduct</div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOMMENDATIONS -->
+<section class="recs-section" id="recommendations">
+  <div class="container">
+    <div class="section-label">Actionable Recommendations</div>
+    <h2 class="section-title">9 changes, <em>directly</em> from the data</h2>
+    <p class="section-intro">Prioritised by impact and feasibility. The most critical improvements require no changes to the archaeological site itself, only to the service environment surrounding it.</p>
+
+    <div class="recs-grid reveal">
+      <div class="rec-item">
+        <div class="rec-priority priority-high">HIGH</div>
+        <div class="rec-num">R1</div>
+        <div class="rec-content">
+          <div class="rec-title">Comprehensive Wayfinding Overhaul</div>
+          <div class="rec-text">Install clear, consistent directional signage along the full basin-to-bus route with walking time estimates and confirmation markers every 200–300m. The roundabout stop is a known confusion point — an unmistakable terminal sign is essential.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-high">HIGH</div>
+        <div class="rec-num">R2</div>
+        <div class="rec-content">
+          <div class="rec-title">Establish a Formal Information Infrastructure</div>
+          <div class="rec-text">Word of mouth is not a strategy. Departure time displays at the visitor centre and basin; standardised hotel partner briefings; a dedicated PAP shuttle bus page on the website and Google Maps. Every visitor should encounter this through an official channel.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-high">HIGH</div>
+        <div class="rec-num">R3</div>
+        <div class="rec-content">
+          <div class="rec-title">Address Vendor & Donkey Operator Misinformation</div>
+          <div class="rec-text">Enforce clear conduct standards for all commercial operators with visible consequences. Deploy uniformed information staff at the basin and along the route to provide accurate guidance and deter bad actors.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-med">MED</div>
+        <div class="rec-num">R4</div>
+        <div class="rec-content">
+          <div class="rec-title">Improve the Pedestrian Walking Experience</div>
+          <div class="rec-text">Walkers rated the journey 5.91/10 vs. donkey riders at 8.25/10 — a 2.34-point gap driven by the physical walk. Shaded rest points, seating, and distance markers would have immediate impact. Even temporary shade structures while longer infrastructure is planned.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-med">MED</div>
+        <div class="rec-num">R5</div>
+        <div class="rec-content">
+          <div class="rec-title">Relocate or Extend the Bus Stop Closer to the Basin</div>
+          <div class="rec-text">The single most-requested change in qualitative feedback. Investigate whether the route can be extended or a secondary pick-up point installed near the basin restaurants.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-med">MED</div>
+        <div class="rec-num">R6</div>
+        <div class="rec-content">
+          <div class="rec-title">Address the Conflict of Interest in Operator Information</div>
+          <div class="rec-text">Donkey operators rank above hotels as an information source — but profit from discouraging walking. A clear code of conduct and ranger presence at key decision points would give visitors a trusted alternative to operator guidance.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-low">LOW</div>
+        <div class="rec-num">R7</div>
+        <div class="rec-content">
+          <div class="rec-title">Accessibility Audit & Plan</div>
+          <div class="rec-text">Commission an accessibility audit of the route. Explore surface improvements, a dedicated accessible shuttle, or a ranger escort service for wheelchair users, injured visitors, and elderly travellers.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-low">LOW</div>
+        <div class="rec-num">R8</div>
+        <div class="rec-content">
+          <div class="rec-title">On-Site Information Strategy Review</div>
+          <div class="rec-text">Audio guide rental, QR markers at monuments, and richer interpretation throughout the site. Petra's heritage is its greatest asset — better storytelling infrastructure would elevate the experience significantly.</div>
+        </div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-priority priority-low">LOW</div>
+        <div class="rec-num">R9</div>
+        <div class="rec-content">
+          <div class="rec-title">Animal Welfare Visibility</div>
+          <div class="rec-text">Welfare concerns were raised unprompted across multiple surveys. Publicly visible welfare standards — through signage, visitor centre notices, or PAP-endorsed operator standards — would align with international visitor expectations.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME -->
+<section class="game-section" id="game">
+  <div class="container">
+    <div class="section-label" style="color:var(--sandstone)">Interactive Experience</div>
+    <h2 class="section-title" style="color:var(--pale)">Navigate Petra: <em style="color:var(--sandstone)">The Shuttle Bus Run</em></h2>
+    <p class="section-intro game-intro">This mini-game recreates the exact pain points our 246 respondents described. Dodge misleading donkey sellers, find the real signs, and reach the bus before it leaves. Choose your character below, then use arrow keys or WASD to move.</p>
+
+    <div id="charSelect" style="margin-bottom:1.5rem">
+      <div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--sandstone);margin-bottom:0.8rem">Choose your character</div>
+      <div style="display:flex;gap:0.8rem;flex-wrap:wrap">
+        <button class="char-btn active" onclick="selectChar('male','tshirt')" id="btn-male-tshirt">Male Traveller</button>
+        <button class="char-btn" onclick="selectChar('male','keffiyeh')" id="btn-male-keffiyeh">Male with Keffiyeh</button>
+        <button class="char-btn" onclick="selectChar('female','tshirt')" id="btn-female-tshirt">Female Traveller</button>
+        <button class="char-btn" onclick="selectChar('female','keffiyeh')" id="btn-female-keffiyeh">Female with Keffiyeh</button>
+      </div>
+    </div>
+
+    <div class="game-wrap">
+      <div class="game-header">
+        <div class="game-title-bar">Treasury to Shuttle Bus Stop</div>
+        <div class="game-stats-bar">
+          <div class="game-stat">Health: <span id="healthDisplay">3 hearts</span></div>
+          <div class="game-stat">Distance: <span id="distDisplay">0m</span></div>
+          <div class="game-stat">Time left: <span id="timeDisplay">120s</span></div>
+        </div>
+      </div>
+      <canvas id="gameCanvas" width="1000" height="400"></canvas>
+      <!-- TOUCH D-PAD (visible on mobile only, hidden on desktop via CSS) -->
+      <div class="touch-dpad" id="touchDpad">
+        <!-- LEFT: movement zone — slide left/right or tap left/right halves -->
+        <div class="dpad-move-zone" id="moveZone">
+          <div class="dpad-move-half" id="btn-left">⬅️<div class="dpad-label">back</div></div>
+          <div class="dpad-move-half" id="btn-right">➡️<div class="dpad-label">forward</div></div>
+        </div>
+        <!-- RIGHT: jump + duck action buttons -->
+        <div class="dpad-action-col">
+          <div class="dpad-btn dpad-jump" id="btn-jump">⬆️<div class="dpad-label">jump</div></div>
+          <div class="dpad-btn dpad-duck" id="btn-duck">⬇️<div class="dpad-label">duck</div></div>
+        </div>
+        <!-- Game controls -->
+        <div class="dpad-game-btns">
+          <button class="game-btn" id="startBtnMobile" onclick="startGame()" style="font-size:0.75rem;padding:0.5rem 0.9rem">Start</button>
+          <button class="game-btn" onclick="restartGame()" style="background:var(--ink);font-size:0.75rem;padding:0.5rem 0.9rem">Reset</button>
+        </div>
+      </div>
+      <div class="game-controls" id="desktopControls">
+        <button class="game-btn" id="startBtn" onclick="startGame()">Start Game</button>
+        <button class="game-btn" onclick="restartGame()" style="background:var(--ink)">Restart</button>
+        <span class="game-hint"><strong style="color:var(--warm)">Jump</strong> (↑ / Space) over donkey sellers · <strong style="color:var(--warm)">Duck</strong> (↓) to sneak under misleading signs · Reach shade to recover health</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="method-section" id="methodology">
+  <div class="container">
+    <div class="section-label">Methodology</div>
+    <h2 class="section-title">How the research <em>was conducted</em></h2>
+    <p class="section-intro">Full ownership of the research process, from instrument design through to field data collection, analysis, and recommendations.</p>
+
+    <div class="method-grid">
+      <div class="method-card reveal">
+        <div class="method-icon">📋</div>
+        <div class="method-title">Survey Design</div>
+        <div class="method-text">Designed and built the survey instrument from scratch, covering six research areas: overall satisfaction, transport mode, schedule awareness, journey satisfaction, visitor profile, and open-ended qualitative feedback. Deliberately kept concise to respect visitor fatigue.</div>
+      </div>
+      <div class="method-card reveal">
+        <div class="method-icon">🧑‍🤝‍🧑</div>
+        <div class="method-title">Field Research</div>
+        <div class="method-text">Led a team of four surveyors conducting in-person interviews at the shuttle bus boarding point near the Turkmaniyya Tomb. Surveys captured feedback immediately post-visit while experiences were fresh. 246 valid responses collected across the survey period.</div>
+      </div>
+      <div class="method-card reveal">
+        <div class="method-icon">📊</div>
+        <div class="method-title">Analysis</div>
+        <div class="method-text">Quantitative analysis of satisfaction scores, demographic breakdowns, and transport mode comparisons. Qualitative thematic coding of open-ended responses. Discovery channel data adjusted for split responses. Results translated into 9 prioritised, actionable recommendations.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:4rem; padding:3rem; background:var(--pale); border-left:4px solid var(--rose);" class="reveal">
+      <div class="section-label">Research Lead</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--deep);margin-bottom:0.5rem">Laura Findlay</h3>
+      <p style="font-size:0.9rem;line-height:1.8;color:var(--ink);max-width:600px">
+        Laura Findlay is an archaeologist, visual anthropologist, UX researcher, and filmmaker. She holds a BA in Archaeology and an MA in Visual Anthropology from the University of Southern California, and is currently in Jordan on a Fulbright grant. Her work moves between disciplines: studying how people inhabit and move through spaces, documenting those experiences on film, and using design research to make places work better for the people who visit them. This project brought all of those threads together at one of the world’s most extraordinary heritage sites, applying UX research methods to Petra’s visitor infrastructure and translating what she found into practical recommendations for PDTRA.</p>
+      <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+        <span class="tag">Fulbright Grantee</span>
+        <span class="tag">UX Research Lead</span>
+        <span class="tag">Survey Design</span>
+        <span class="tag">Team Lead</span>
+        <span class="tag">BA Archaeology · USC</span>
+        <span class="tag">MA Visual Anthropology · USC</span>
+        <span class="tag">Filmmaker</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACKNOWLEDGEMENTS -->
+<section style="background:white;padding:5rem 0;">
+  <div class="container">
+    <div class="section-label">With Thanks</div>
+    <h2 class="section-title">Acknowledgements</h2>
+    <p class="section-intro" style="margin-bottom:2.5rem">This research would not have been possible without the generosity, hard work, and support of the following people.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;">
+      <div style="padding:2rem;background:var(--pale);border-radius:4px;border-top:3px solid var(--rose);">
+        <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--sandstone);margin-bottom:0.8rem">Survey Team</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep);margin-bottom:0.3rem">Laura Findlay <span style="font-size:0.75rem;color:var(--rose);font-family:'DM Sans',sans-serif;font-style:normal">(Research Lead)</span></p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep);margin-bottom:0.3rem">Laura Hanna</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep);margin-bottom:0.3rem">Roaa Hasanat</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep)">Feras Al Salameen</p>
+        <p style="font-size:0.82rem;color:#888;margin-top:0.8rem;line-height:1.6">The team who conducted in-person interviews at the shuttle bus boarding point near the Turkmaniyya Tomb, collecting all 246 responses.</p>
+      </div>
+      <div style="padding:2rem;background:var(--pale);border-radius:4px;border-top:3px solid var(--sandstone);">
+        <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--sandstone);margin-bottom:0.8rem">Field Coordination</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep)">Fadi Al Rawadieh</p>
+        <p style="font-size:0.82rem;color:#888;margin-top:0.8rem;line-height:1.6">Field coordinator, whose support in organising and facilitating the on-site survey operation was invaluable.</p>
+      </div>
+      <div style="padding:2rem;background:var(--pale);border-radius:4px;border-top:3px solid var(--gold);">
+        <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--sandstone);margin-bottom:0.8rem">Commissioned By</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep);margin-bottom:0.3rem">Dr. Fares Braizat</p>
+        <p style="font-size:0.8rem;color:#888;margin-bottom:0.8rem">Chief Commissioner, PDTRA</p>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep)">Yazan Mahadin</p>
+        <p style="font-size:0.8rem;color:#888;margin-bottom:0.8rem">Commissioner, PAP</p>
+        <p style="font-size:0.82rem;color:#888;margin-top:0.4rem;line-height:1.6">For entrusting this research to me and for their commitment to improving the visitor experience at Petra.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">Laura Findlay</div>
+  <div class="footer-role">Visual Anthropologist · UX Researcher · Filmmaker</div>
+  <div class="footer-note">Visitor Experience Research · Petra Archaeological Park · February 2026<br>
+  Conducted under the direction of PDTRA · Chief Commissioner Dr. Fares Braizat & Commissioner Yazan Mahadin</div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+function animateRing() { rx += (mx-rx)*0.12; ry += (my-ry)*0.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animateRing); }
+animateRing();
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.15 });
+revealEls.forEach(el => obs.observe(el));
+
+// Chart bars animate on scroll
+const chartRows = document.querySelectorAll('.chart-row');
+const chartObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      const row = e.target;
+      row.classList.add('visible');
+      const bar = row.querySelector('.chart-bar');
+      const pct = bar.dataset.pct;
+      setTimeout(() => { bar.style.width = pct + '%'; }, 200);
+      chartObs.unobserve(row);
+    }
+  });
+}, { threshold: 0.3 });
+chartRows.forEach((row, i) => { row.style.transitionDelay = (i * 0.08) + 's'; chartObs.observe(row); });
+
+// =====================
+// GAME ENGINE
+// =====================
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 1000; canvas.height = 400;
+
+let gameState = 'idle';
+let player, obstacles, signs, goodSigns, busStop, scrollX, health, timeLeft, timer;
+let keys = {};
+let particles = [];
+let selectedGender = 'male';
+let selectedOutfit = 'tshirt';
+let busAnimX = 0, busScrollAtBoard = 0, boardingTimer = 0, playerBoardingX = 0;
+
+function selectChar(gender, outfit) {
+  selectedGender = gender; selectedOutfit = outfit;
+  document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + gender + '-' + outfit).classList.add('active');
+  if (gameState === 'idle') drawIdle();
+}
+
+// Unified input state — keyboard and touch both write here
+const input = { right: false, left: false, jump: false, duck: false };
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='d'||e.key==='D') input.right = true;
+  if (e.key==='ArrowLeft' ||e.key==='a'||e.key==='A') input.left  = true;
+  if (e.key==='ArrowUp'   ||e.key==='w'||e.key==='W'||e.key===' ') input.jump = true;
+  if (e.key==='ArrowDown' ||e.key==='s'||e.key==='S') input.duck  = true;
+  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('keyup', e => {
+  if (e.key==='ArrowRight'||e.key==='d'||e.key==='D') input.right = false;
+  if (e.key==='ArrowLeft' ||e.key==='a'||e.key==='A') input.left  = false;
+  if (e.key==='ArrowUp'   ||e.key==='w'||e.key==='W'||e.key===' ') input.jump = false;
+  if (e.key==='ArrowDown' ||e.key==='s'||e.key==='S') input.duck  = false;
+});
+
+function initGame() {
+  player = { x: 120, y: 252, vy: 0, onGround: true, frame: 0, frameTimer: 0,
+             gender: selectedGender, outfit: selectedOutfit, ducking: false };
+  scrollX = 0; health = 3; timeLeft = 120; particles = [];
+  obstacles = [];
+  for (let i = 0; i < 12; i++) {
+    const ox = 700 + i*270 + Math.random()*80;
+    if (ox < 3100) { // nothing after bus stop (x:3400)
+      obstacles.push({ x: ox, baseY: 230,
+        y: 230, speed: 0.55+Math.random()*0.6, rangeY: 28, hit: false, hitTimer: 0,
+        type: Math.random()>0.5 ? 'donkey' : 'seller' });
+    }
+  }
+  signs = [];
+  for (let i = 0; i < 11; i++) {
+    const sx = 500+i*270+Math.random()*60;
+    if (sx < 3100) signs.push({ x: sx, fake: Math.random()>0.38, collected: false });
+  }
+  goodSigns = [];
+  for (let i = 0; i < 7; i++)
+    goodSigns.push({ x: 400+i*420, collected: false });
+  busStop = { x: 3400 };
+  updateHUD();
+}
+
+function updateHUD() {
+  let h = ''; for (let i=0;i<Math.max(0,health);i++) h += String.fromCharCode(10084)+' ';
+  document.getElementById('healthDisplay').textContent = h.trim();
+  document.getElementById('distDisplay').textContent = Math.round(scrollX/20)+'m';
+  document.getElementById('timeDisplay').textContent = Math.ceil(timeLeft)+'s';
+}
+
+function startGame() {
+  if (gameState === 'playing') return;
+  initGame(); gameState = 'playing';
+  const sb = document.getElementById('startBtn'); if(sb) sb.textContent = 'Playing...';
+  const sbm = document.getElementById('startBtnMobile'); if(sbm) sbm.textContent = 'Playing...';
+  gameLoop();
+  timer = setInterval(() => {
+    if (gameState !== 'playing') return;
+    timeLeft--;
+    if (timeLeft <= 0) { gameState = 'lost'; showEnd('You missed the last bus!', '#C1440E'); }
+    updateHUD();
+  }, 1000);
+}
+
+function restartGame() {
+  clearInterval(timer); gameState = 'idle';
+  const sb = document.getElementById('startBtn'); if(sb) sb.textContent = 'Start Game';
+  const sbm = document.getElementById('startBtnMobile'); if(sbm) sbm.textContent = 'Start';
+  initGame(); drawIdle();
+}
+
+function showEnd(msg, col) {
+  clearInterval(timer);
+  const _sb=document.getElementById('startBtn'); if(_sb)_sb.textContent='Start Game';
+  const _sbm=document.getElementById('startBtnMobile'); if(_sbm)_sbm.textContent='Start';
+  // Redraw background cleanly so obstacles don't show through the game-over screen
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawBackground(scrollX);
+  ctx.fillStyle = 'rgba(10,4,2,0.88)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = col; ctx.font = 'bold 32px Cormorant Garamond, serif';
+  ctx.textAlign = 'center'; ctx.fillText(msg, canvas.width/2, canvas.height/2-18);
+  ctx.fillStyle = '#F5E6D3'; ctx.font = '15px DM Sans';
+  ctx.fillText(gameState==='won'
+    ? 'You found the bus! Most of our 246 surveyed visitors were not so lucky.'
+    : 'This is what 57% of Petra visitors experience every day.',
+    canvas.width/2, canvas.height/2+16);
+  ctx.textAlign = 'left';
+}
+
+// Treasury facade drawn in background (parallax)
+function drawTreasury(scroll) {
+  // Petra cave-carved sandstone cliffs - parallax background
+  const alpha = Math.min(1, Math.max(0, 1.0 - scroll * 0.0001));
+  if (alpha <= 0) return;
+  ctx.globalAlpha = alpha;
+
+  // Cliff face gradient - deep sandy rose sandstone
+  const grad = ctx.createLinearGradient(0,0,0,165);
+  grad.addColorStop(0,   '#B85838');
+  grad.addColorStop(0.3, '#C86848');
+  grad.addColorStop(0.7, '#D4845A');
+  grad.addColorStop(1,   '#B86040');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, canvas.width, 165);
+
+  // Horizontal sandstone strata bands
+  [[12,5,'rgba(150,60,25,0.3)'],[30,4,'rgba(195,105,60,0.18)'],[50,6,'rgba(145,58,22,0.28)'],
+   [72,4,'rgba(185,90,50,0.2)'],[96,6,'rgba(160,68,30,0.25)'],[122,5,'rgba(205,112,65,0.16)'],[145,4,'rgba(140,55,20,0.22)']
+  ].forEach(([y,h,c])=>{ ctx.fillStyle=c; ctx.fillRect(0,y,canvas.width,h); });
+
+  // Parallax offset
+  const po = (scroll * 0.18) % canvas.width;
+
+  // === THREE ROWS of cave openings — row 3 up to 90px wide ===
+  // Row 1: high up, small tomb niches
+  const row1 = [
+    {ox:55,  oy:4,  w:36, h:32},
+    {ox:145, oy:2,  w:30, h:28},
+    {ox:235, oy:5,  w:40, h:36},
+    {ox:335, oy:2,  w:34, h:30},
+    {ox:425, oy:4,  w:36, h:32},
+    {ox:520, oy:2,  w:32, h:28},
+    {ox:618, oy:4,  w:38, h:34},
+    {ox:718, oy:2,  w:30, h:28},
+    {ox:810, oy:5,  w:42, h:36},
+    {ox:908, oy:2,  w:34, h:30},
+    {ox:990, oy:4,  w:36, h:32},
+  ];
+  // Row 2: mid height, medium tombs
+  const row2 = [
+    {ox:22,  oy:46, w:56, h:50},
+    {ox:108, oy:42, w:64, h:56},
+    {ox:200, oy:48, w:52, h:46},
+    {ox:285, oy:40, w:70, h:60},
+    {ox:388, oy:46, w:58, h:52},
+    {ox:476, oy:42, w:52, h:46},
+    {ox:566, oy:48, w:68, h:58},
+    {ox:658, oy:42, w:56, h:50},
+    {ox:748, oy:46, w:60, h:54},
+    {ox:843, oy:40, w:64, h:56},
+    {ox:940, oy:46, w:54, h:48},
+  ];
+  // Row 3: lower, large — up to 90px wide, most dramatic
+  const row3 = [
+    {ox:12,  oy:98,  w:75, h:62},
+    {ox:110, oy:92,  w:84, h:68},
+    {ox:220, oy:100, w:70, h:60},
+    {ox:315, oy:90,  w:90, h:72},
+    {ox:430, oy:98,  w:76, h:64},
+    {ox:532, oy:92,  w:82, h:68},
+    {ox:638, oy:100, w:88, h:70},
+    {ox:748, oy:94,  w:74, h:62},
+    {ox:845, oy:98,  w:80, h:66},
+    {ox:948, oy:92,  w:72, h:60},
+  ];
+
+  function drawCave(ox, oy, w, h) {
+    let cx = ((ox - po) % (canvas.width + 140) + canvas.width + 140) % (canvas.width + 140) - 70;
+    const r = w * 0.44;
+    const archMidX = cx + w/2;
+    const archBaseY = oy + r;
+
+    // Outer drop shadow for depth
+    ctx.fillStyle = 'rgba(40,12,2,0.45)';
+    ctx.beginPath();
+    ctx.arc(archMidX, archBaseY+3, r+6, Math.PI, 0);
+    ctx.lineTo(cx+w+6, oy+h+5);
+    ctx.lineTo(cx-6, oy+h+5);
+    ctx.closePath(); ctx.fill();
+
+    // Carved rock surround — light relief
+    ctx.fillStyle = '#E09070';
+    ctx.beginPath();
+    ctx.arc(archMidX, archBaseY, r+5, Math.PI, 0);
+    ctx.lineTo(cx+w+5, oy+h+2);
+    ctx.lineTo(cx-5, oy+h+2);
+    ctx.closePath(); ctx.fill();
+
+    // Inner carved frame — slightly darker
+    ctx.fillStyle = '#C87050';
+    ctx.beginPath();
+    ctx.arc(archMidX, archBaseY, r+2, Math.PI, 0);
+    ctx.lineTo(cx+w+2, oy+h+1);
+    ctx.lineTo(cx-2, oy+h+1);
+    ctx.closePath(); ctx.fill();
+
+    // Dark cave interior
+    ctx.fillStyle = '#0e0401';
+    ctx.beginPath();
+    ctx.arc(archMidX, archBaseY, r, Math.PI, 0);
+    ctx.lineTo(cx+w, oy+h);
+    ctx.lineTo(cx, oy+h);
+    ctx.closePath(); ctx.fill();
+
+    // Interior depth gradient
+    const ig = ctx.createRadialGradient(archMidX, oy+h*0.7, 2, archMidX, oy+h*0.4, r*0.85);
+    ig.addColorStop(0, 'rgba(90,35,10,0.35)');
+    ig.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = ig;
+    ctx.beginPath();
+    ctx.arc(archMidX, archBaseY, r, Math.PI, 0);
+    ctx.lineTo(cx+w, oy+h);
+    ctx.lineTo(cx, oy+h);
+    ctx.closePath(); ctx.fill();
+
+    // Rock lintel above arch
+    ctx.fillStyle = '#A85030';
+    ctx.fillRect(cx-3, oy+r-5, w+6, 5);
+    ctx.fillStyle = 'rgba(220,130,80,0.35)';
+    ctx.fillRect(cx-3, oy+r-6, w+6, 2);
+
+    // Side pilasters
+    ctx.fillStyle = 'rgba(80,28,8,0.3)';
+    ctx.fillRect(cx, oy+r, 4, h-r+2);
+    ctx.fillRect(cx+w-4, oy+r, 4, h-r+2);
+  }
+
+  row1.forEach(c => drawCave(c.ox, c.oy, c.w, c.h));
+  row2.forEach(c => drawCave(c.ox, c.oy, c.w, c.h));
+  row3.forEach(c => drawCave(c.ox, c.oy, c.w, c.h));
+
+  // Rock surface texture
+  ctx.fillStyle = 'rgba(110,42,15,0.1)';
+  for (let i=0;i<14;i++) {
+    const bx = (i*84 - po*0.35 + canvas.width*2) % canvas.width;
+    const by = 18 + (i*43)%110;
+    ctx.beginPath(); ctx.ellipse(bx, by, 26+(i*11)%36, 6+(i*5)%10, 0.3, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.strokeStyle = 'rgba(90,32,10,0.2)'; ctx.lineWidth = 1.2;
+  for (let i=0;i<10;i++) {
+    const crx = (i*108 - po*0.28 + canvas.width*2) % canvas.width;
+    ctx.beginPath(); ctx.moveTo(crx,0); ctx.lineTo(crx+7,46+i*9); ctx.lineTo(crx-3,92+i*6); ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+function drawBackground(scroll) {
+  const sky = ctx.createLinearGradient(0,0,0,canvas.height);
+  sky.addColorStop(0,'#87CEEB'); sky.addColorStop(0.55,'#F5DEB3');
+  ctx.fillStyle = sky; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#FFD700'; ctx.beginPath(); ctx.arc(820,55,32,0,Math.PI*2); ctx.fill();
+  drawTreasury(scroll);
+  // Cliff layers
+  const layers = [{c:'#A0360A',y:78,spd:0.08,amp:26},{c:'#C1440E',y:114,spd:0.12,amp:18},{c:'#D4845A',y:148,spd:0.16,amp:14}];
+  layers.forEach(l => {
+    ctx.fillStyle = l.c; ctx.beginPath(); ctx.moveTo(0,l.y);
+    for (let x=0;x<=canvas.width+20;x+=28) ctx.lineTo(x,l.y+Math.sin((x+scroll*l.spd)*0.02)*l.amp);
+    ctx.lineTo(canvas.width,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
+  });
+  ctx.fillStyle = '#7A4A2A'; ctx.fillRect(0,280,canvas.width,120);
+  ctx.fillStyle = '#9A6040'; ctx.fillRect(0,280,canvas.width,8);
+  ctx.fillStyle = '#C09060'; ctx.fillRect(0,264,canvas.width,22);
+  ctx.fillStyle = 'rgba(184,134,11,0.45)';
+  for (let x=0;x<canvas.width+80;x+=80) {
+    const px = ((x-(scroll%80))+canvas.width+80)%(canvas.width+80);
+    ctx.fillRect(px,272,40,4);
+  }
+  if (scroll < 240) {
+    ctx.fillStyle = 'rgba(245,230,211,0.85)'; ctx.font = 'bold 11px DM Sans';
+    ctx.fillText('You are here: Petra Treasury', 12, 176);
+  }
+}
+
+function drawPlayerChar(p) {
+  const x=p.x, y=p.y, fem=p.gender==='female', kef=p.outfit==='keffiyeh';
+  const duck = p.ducking;
+  // When ducking: shift everything up (character squats down, visually y offset by +12)
+  const dy = duck ? 12 : 0; // vertical offset for ducking
+  const leg = (!duck && p.onGround) ? Math.sin(p.frame*0.4)*6 : 0;
+  // Legs (shorter when ducking)
+  ctx.fillStyle='#3D1F0F';
+  if (duck) {
+    // Bent legs when crouching
+    ctx.fillRect(x-10,y+2,9,8); ctx.fillRect(x+1,y+2,9,8);
+    ctx.fillRect(x-12,y+8,10,6); ctx.fillRect(x+2,y+8,10,6);
+  } else {
+    ctx.fillRect(x-7,y+4,7,14+leg); ctx.fillRect(x,y+4,7,14-leg);
+  }
+  // Body (compressed when ducking)
+  ctx.fillStyle = kef ? (fem?'#8B4513':'#6B3410') : (fem?'#C1440E':'#2A5E78');
+  const bodyH = duck ? 12 : 22;
+  if (fem && !duck) { ctx.beginPath(); ctx.moveTo(x-9,y-18); ctx.lineTo(x+9,y-18); ctx.lineTo(x+12,y+6); ctx.lineTo(x-12,y+6); ctx.closePath(); ctx.fill(); }
+  else ctx.fillRect(x-8, y-18+dy, 16, bodyH);
+  // Arms
+  ctx.fillStyle='#FDBCB4';
+  if (duck) {
+    ctx.fillRect(x-16,y-4,8,8); ctx.fillRect(x+8,y-4,8,8); // arms out to sides when ducking
+  } else {
+    ctx.fillRect(x-13,y-16,6,16); ctx.fillRect(x+7,y-16,6,16);
+  }
+  // Head (lower when ducking)
+  ctx.fillStyle = fem ? '#FDBCB4' : '#F0A882';
+  ctx.beginPath(); ctx.arc(x,y-26+dy,10,0,Math.PI*2); ctx.fill();
+  // Hair
+  ctx.fillStyle = fem ? '#3D1F0F' : '#5C3317';
+  if (fem) { ctx.fillRect(x-10,y-36+dy,20,12); ctx.fillRect(x-12,y-34+dy,4,20); ctx.fillRect(x+8,y-34+dy,4,20); }
+  else ctx.fillRect(x-9,y-36+dy,18,8);
+  if (kef) {
+    const ky = dy;
+    // === KEFFIYEH: tight turban-style wrap at crown only, small tail to one side ===
+    // Like the reference photo - cloth bunched at top of head, small tail falling right
+
+    // Hair remains fully visible below the wrap (gender stays clear)
+    // The wrap sits only on the very top of the head - like a cap
+
+    // White base of the wrap - just the crown area
+    ctx.fillStyle = 'white';
+    // Tight wrap dome - sits ON TOP of head, not covering it
+    ctx.beginPath();
+    ctx.arc(x, y-34+ky, 10, Math.PI, 0);
+    ctx.fill();
+    ctx.fillRect(x-10, y-34+ky, 20, 7); // band across top
+
+    // Small folded tail falling to right side only - just 8-10px
+    ctx.beginPath();
+    ctx.moveTo(x+8, y-30+ky);
+    ctx.lineTo(x+13, y-28+ky);
+    ctx.lineTo(x+14, y-22+ky);
+    ctx.lineTo(x+10, y-22+ky);
+    ctx.lineTo(x+8,  y-26+ky);
+    ctx.closePath(); ctx.fill();
+
+    // === RED & WHITE CHEVRON PATTERN on the wrap ===
+    ctx.strokeStyle = '#CC0000'; ctx.lineWidth = 1.2;
+    // Zigzag lines across the top wrap
+    for (let row = 0; row < 2; row++) {
+      const ry2 = y - 40 + ky + row * 4;
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        ctx.lineTo(x - 8 + i*4, ry2 + (i%2===0 ? 0 : 3));
+      }
+      ctx.stroke();
+    }
+    // Horizontal red bands
+    ctx.fillStyle = '#CC0000';
+    ctx.fillRect(x-10, y-37+ky, 20, 1.5);
+    ctx.fillRect(x-10, y-33+ky, 20, 1.5);
+    // Vertical stripes
+    for (let vi = 0; vi < 4; vi++) ctx.fillRect(x-8+vi*5, y-40+ky, 1.5, 10);
+    // Dots at intersections
+    ctx.fillStyle = '#AA0000';
+    for (let ri = 0; ri < 2; ri++) for (let ci = 0; ci < 3; ci++) {
+      ctx.beginPath(); ctx.arc(x-6+ci*5, y-38+ky+ri*4, 1.2, 0, Math.PI*2); ctx.fill();
+    }
+    // Tail stripe
+    ctx.fillStyle = '#CC0000';
+    ctx.fillRect(x+9, y-28+ky, 1.5, 6);
+    ctx.fillRect(x+12, y-28+ky, 1.5, 6);
+    // Subtle wrap ridge line at base of wrap
+    ctx.strokeStyle = 'rgba(180,0,0,0.4)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x-10, y-28+ky); ctx.lineTo(x+8, y-28+ky); ctx.stroke();
+  } else {
+    // Sun hat (also shifts with duck)
+    ctx.fillStyle='#D4845A'; ctx.fillRect(x-13,y-36+dy,26,4); ctx.fillRect(x-8,y-49+dy,16,14);
+    ctx.fillStyle='#C1440E'; ctx.fillRect(x-8,y-38+dy,16,3);
+    // Clipboard
+    if (!duck) {
+      ctx.fillStyle='#F5F5DC'; ctx.fillRect(x+8,y-16,10,12);
+      ctx.fillStyle='#C1440E'; ctx.fillRect(x+9,y-15,8,2); ctx.fillRect(x+9,y-12,6,1); ctx.fillRect(x+9,y-10,7,1);
+    }
+  }
+}
+
+function drawObstacle(obs,scroll) {
+  const sx=obs.x-scroll;
+  if (sx<-120||sx>canvas.width+120) return;
+  if (obs.hit) ctx.globalAlpha=0.5+Math.sin(obs.hitTimer*0.5)*0.3;
+  if (obs.type==='donkey') {
+    ctx.fillStyle='#8B7355'; ctx.fillRect(sx-22,obs.y-8,44,26);
+    ctx.fillStyle='#A08060'; ctx.fillRect(sx+20,obs.y-20,16,22);
+    ctx.fillStyle='#8B7355'; ctx.fillRect(sx+22,obs.y-33,4,15); ctx.fillRect(sx+29,obs.y-33,4,15);
+    ctx.fillStyle='#6B5335';
+    [sx-16,sx-6,sx+8,sx+18].forEach(lx=>ctx.fillRect(lx,obs.y+17,7,16));
+    if (!obs.hit) {
+      ctx.fillStyle='white'; ctx.beginPath(); ctx.roundRect(sx-45,obs.y-62,90,30,6); ctx.fill();
+      ctx.fillStyle='#C1440E'; ctx.font='bold 9px DM Sans'; ctx.textAlign='center';
+      ctx.fillText('Bus is VERY far away!',sx,obs.y-42); ctx.textAlign='left';
+    }
+  } else {
+    ctx.fillStyle='#8B4513'; ctx.fillRect(sx-8,obs.y-20,16,24);
+    ctx.fillStyle='#FDBCB4'; ctx.beginPath(); ctx.arc(sx,obs.y-26,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#D4845A'; ctx.fillRect(sx-12,obs.y-36,24,3);
+    if (!obs.hit) {
+      ctx.fillStyle='white'; ctx.beginPath(); ctx.roundRect(sx-50,obs.y-65,100,30,6); ctx.fill();
+      ctx.fillStyle='#C1440E'; ctx.font='bold 9px DM Sans'; ctx.textAlign='center';
+      ctx.fillText('Donkey ride? Very cheap!',sx,obs.y-45); ctx.textAlign='left';
+    }
+  }
+  ctx.globalAlpha=1;
+}
+
+function drawSign(sign,scroll) {
+  const sx=sign.x-scroll;
+  if (sx<-80||sx>canvas.width+80||sign.collected) return;
+  ctx.fillStyle='#5C3317'; ctx.fillRect(sx-2,210,4,55);
+  ctx.fillStyle=sign.fake?'#C1440E':'#27AE60';
+  ctx.beginPath(); ctx.roundRect(sx-32,172,64,40,4); ctx.fill();
+  ctx.fillStyle='white'; ctx.font='bold 8px DM Sans'; ctx.textAlign='center';
+  if (sign.fake) { ctx.fillText('BUS STOP',sx,187); ctx.fillText('> 2 min walk',sx,199); ctx.fillText('(misleading!)',sx,209); }
+  else { ctx.fillText('BUS STOP',sx,187); ctx.fillText('> THIS WAY',sx,199); ctx.fillText('OFFICIAL',sx,209); }
+  ctx.textAlign='left';
+}
+
+function drawShade(shade,scroll) {
+  const sx=shade.x-scroll;
+  if (sx<-100||sx>canvas.width+100||shade.collected) return;
+  ctx.fillStyle='#8BB8C8'; ctx.fillRect(sx-45,200,90,5);
+  ctx.fillStyle='#5C3317'; ctx.fillRect(sx-40,205,4,55); ctx.fillRect(sx+36,205,4,55);
+  ctx.fillStyle='rgba(139,184,200,0.35)'; ctx.fillRect(sx-45,200,90,60);
+  ctx.fillStyle='#1a4a60'; ctx.font='11px DM Sans'; ctx.textAlign='center';
+  ctx.fillText('Shade - rest here',sx,222); ctx.textAlign='left';
+}
+
+function drawBusStop(scroll) {
+  const sx=busStop.x-scroll;
+  if (sx>canvas.width+250) return;
+  ctx.fillStyle='#1a6640'; ctx.fillRect(sx-4,165,8,115);
+  ctx.fillStyle='#27AE60'; ctx.beginPath(); ctx.roundRect(sx-72,105,144,64,8); ctx.fill();
+  ctx.fillStyle='#1a5e35'; ctx.beginPath(); ctx.roundRect(sx-72,105,144,8,[8,8,0,0]); ctx.fill();
+  ctx.fillStyle='white'; ctx.font='bold 15px Cormorant Garamond, serif'; ctx.textAlign='center';
+  ctx.fillText('SHUTTLE BUS STOP',sx,130);
+  ctx.font='10px DM Sans'; ctx.fillText('OFFICIAL - PDTRA',sx,150); ctx.textAlign='left';
+  ctx.fillStyle='#2E86AB'; ctx.beginPath(); ctx.roundRect(sx-82,232,156,58,6); ctx.fill();
+  ctx.fillStyle='#1a5f7a';
+  [[sx-76,238,46,36],[sx-22,238,46,36],[sx+32,238,38,36]].forEach(r=>ctx.fillRect(...r));
+  ctx.fillStyle='#C8ECF8';
+  [[sx-73,241,40,28],[sx-19,241,40,28],[sx+34,241,32,28]].forEach(r=>ctx.fillRect(...r));
+  ctx.fillStyle='#222';
+  ctx.beginPath(); ctx.arc(sx-46,290,14,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(sx+50,290,14,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#777';
+  ctx.beginPath(); ctx.arc(sx-46,290,6,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(sx+50,290,6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='white'; ctx.font='bold 10px DM Sans'; ctx.textAlign='center';
+  ctx.fillText('PETRA SHUTTLE',sx-6,260); ctx.textAlign='left';
+}
+
+function addParticles(x,y,col) {
+  for (let i=0;i<10;i++) particles.push({x,y,vx:(Math.random()-0.5)*5,vy:(Math.random()-2.5)*3,life:1,col});
+}
+
+function gameLoop() {
+  if (gameState !== 'playing') return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawBackground(scrollX);
+  const speed = 3.5;
+
+  // Unified input — all directions can be held simultaneously
+  const jumpBoost = !player.onGround ? 1.6 : 1; // extra forward speed mid-air
+  if (input.right) scrollX += speed * jumpBoost;
+  if (input.left && scrollX > 0) scrollX = Math.max(0, scrollX - speed);
+  if (input.jump && player.onGround && !player.ducking) { player.vy = -17; player.onGround = false; }
+  player.ducking = input.duck && player.onGround;
+
+  player.vy += 0.55; player.y += player.vy;
+  if (player.y >= 252) { player.y = 252; player.vy = 0; player.onGround = true; }
+  if (player.y < 148)  { player.y = 148; player.vy = 0; }
+
+  if (input.right || input.left) {
+    player.frameTimer++; if (player.frameTimer>4) { player.frame++; player.frameTimer = 0; }
+  }
+
+  // Deferred game-over: collect a pending end message, show AFTER all drawing
+  let pendingEnd = null;
+
+  // --- DRAW ALL GAME ELEMENTS FIRST ---
+  obstacles.forEach(obs => {
+    obs.y = obs.baseY + Math.sin(Date.now()*0.002*obs.speed)*obs.rangeY;
+    if (obs.hitTimer>0) obs.hitTimer--; else obs.hit=false;
+    drawObstacle(obs,scrollX);
+  });
+
+  signs.forEach(sign => { drawSign(sign,scrollX); });
+  goodSigns.forEach(shade => { drawShade(shade,scrollX); });
+  drawBusStop(scrollX);
+
+  particles = particles.filter(p=>p.life>0);
+  particles.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.25; p.life-=0.05;
+    ctx.globalAlpha=p.life; ctx.fillStyle=p.col; ctx.fillRect(p.x-3,p.y-3,6,6); ctx.globalAlpha=1;
+  });
+
+  drawPlayerChar(player);
+  updateHUD();
+
+  const progress = Math.min(scrollX/(busStop.x-300),1);
+  ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.fillRect(18,18,210,12);
+  ctx.fillStyle='#27AE60'; ctx.fillRect(18,18,210*progress,12);
+  ctx.fillStyle='white'; ctx.font='10px DM Sans'; ctx.fillText('Progress to bus stop',18,46);
+
+  // --- THEN CHECK COLLISIONS AND LOGIC ---
+  obstacles.forEach(obs => {
+    const sx = obs.x-scrollX;
+    if (Math.abs(sx-player.x)<28 && player.y > obs.y-32 && player.y < obs.y+28 && !obs.hit) {
+      obs.hit=true; obs.hitTimer=70; health=Math.max(0,health-1);
+      addParticles(player.x,player.y,'#C1440E');
+      if (health<=0 && !pendingEnd) pendingEnd = {msg:'You collapsed from heat and confusion!', col:'#C1440E'};
+      updateHUD();
+    }
+  });
+
+  signs.forEach(sign => {
+    const sx=sign.x-scrollX;
+    if (!sign.collected && Math.abs(sx-player.x)<38 && !player.ducking) {
+      const playerHeadY = player.y - 36;
+      if (playerHeadY > 160 && playerHeadY < 260) {
+        sign.collected=true;
+        if (sign.fake) {
+          health=Math.max(0,health-1); addParticles(player.x,player.y,'#C1440E');
+          if (health<=0 && !pendingEnd) pendingEnd = {msg:'A misleading sign sent you the wrong way!', col:'#C1440E'};
+        } else addParticles(player.x,player.y,'#27AE60');
+        updateHUD();
+      }
+    }
+  });
+
+  goodSigns.forEach(shade => {
+    const sx=shade.x-scrollX;
+    if (!shade.collected && Math.abs(sx-player.x)<55 && Math.abs(200-player.y)<85) {
+      shade.collected=true;
+      if (health<3) { health=Math.min(3,health+1); addParticles(player.x,player.y,'#8BB8C8'); updateHUD(); }
+    }
+  });
+
+  // Bus reached?
+  if (busStop.x-scrollX < 180 && gameState === 'playing') {
+    gameState = 'boarding';
+    busAnimX = busStop.x - scrollX;
+    busScrollAtBoard = scrollX;
+    boardingTimer = 0;
+    playerBoardingX = player.x;
+    clearInterval(timer);
+    const _sb2=document.getElementById('startBtn'); if(_sb2)_sb2.textContent='Start Game';
+    const _sbm2=document.getElementById('startBtnMobile'); if(_sbm2)_sbm2.textContent='Start';
+    boardingLoop();
+    return;
+  }
+
+  // --- GAME OVER OVERLAY DRAWN LAST — always on top ---
+  if (pendingEnd) {
+    gameState = 'lost';
+    showEnd(pendingEnd.msg, pendingEnd.col);
+    return;
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+function boardingLoop() {
+  if (gameState !== 'boarding') return;
+  boardingTimer++;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Background stays static during boarding
+  drawBackground(busScrollAtBoard);
+
+  const BUS_DOOR_X = busAnimX - 10; // where player walks to board
+  const phase1End = 50;   // player walks to bus door
+  const phase2End = 80;   // player jumps through door
+  const phase3End = 160;  // bus drives off right
+  const phase4End = 220;  // fade to congrats
+
+  if (boardingTimer < phase1End) {
+    // Phase 1: Player walks right toward bus door
+    const walkProgress = boardingTimer / phase1End;
+    playerBoardingX = player.x + (BUS_DOOR_X - player.x) * walkProgress;
+    const walkPlayer = { ...player, x: playerBoardingX, ducking: false, onGround: true,
+      frame: boardingTimer, frameTimer: 0 };
+    drawBusStop(busScrollAtBoard);
+    drawPlayerChar(walkPlayer);
+    // "You made it!" text
+    ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fillRect(0, canvas.height-60, canvas.width, 60);
+    ctx.fillStyle = '#F5E6D3'; ctx.font = 'bold 18px Cormorant Garamond, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('You found the bus! Quick, jump on!', canvas.width/2, canvas.height-28);
+    ctx.textAlign = 'left';
+
+  } else if (boardingTimer < phase2End) {
+    // Phase 2: Player jumps into bus door
+    const jumpT = (boardingTimer - phase1End) / (phase2End - phase1End);
+    const jumpY = player.y - Math.sin(jumpT * Math.PI) * 40;
+    const jumpX = BUS_DOOR_X + jumpT * 20;
+    const jumpAlpha = 1 - jumpT * 0.8;
+    drawBusStop(busScrollAtBoard);
+    ctx.globalAlpha = jumpAlpha;
+    const jumpPlayer = { ...player, x: jumpX, y: jumpY, ducking: false, onGround: false, frame: boardingTimer };
+    drawPlayerChar(jumpPlayer);
+    ctx.globalAlpha = 1;
+
+  } else if (boardingTimer < phase3End) {
+    // Phase 3: Bus drives off screen to the right
+    const driveT = (boardingTimer - phase2End) / (phase3End - phase2End);
+    const busDriveX = busAnimX + driveT * (canvas.width + 200);
+    // Draw driving bus (reuse drawBusStop with offset scroll)
+    const fakeScroll = busScrollAtBoard - (busDriveX - busAnimX);
+    drawBusStop(fakeScroll);
+    // Dust particles behind bus
+    if (boardingTimer % 3 === 0) addParticles(busDriveX - 120, 270, '#C09060');
+    particles = particles.filter(p=>p.life>0);
+    particles.forEach(p=>{
+      p.x+=p.vx*0.5; p.y+=p.vy*0.3; p.life-=0.04;
+      ctx.globalAlpha=p.life*0.6; ctx.fillStyle=p.col;
+      ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1;
+    });
+    // Speed lines
+    ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=1.5;
+    for (let i=0;i<6;i++) {
+      const lx = busDriveX - 80 - i*30;
+      ctx.beginPath(); ctx.moveTo(lx,240+i*8); ctx.lineTo(lx-40,240+i*8); ctx.stroke();
+    }
+    // "Bye!" text
+    ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fillRect(0, canvas.height-55, canvas.width, 55);
+    ctx.fillStyle = '#F5E6D3'; ctx.font = 'bold 16px DM Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('The Petra Shuttle departs on time. Not everyone was so lucky.', canvas.width/2, canvas.height-24);
+    ctx.textAlign = 'left';
+
+  } else if (boardingTimer < phase4End) {
+    // Phase 4: Fade to black
+    const fadeT = (boardingTimer - phase3End) / (phase4End - phase3End);
+    ctx.fillStyle = '#0a0402';
+    ctx.globalAlpha = fadeT;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+
+  } else {
+    // Phase 5: Congrats screen
+    gameState = 'won';
+    ctx.fillStyle = '#0a0402'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Decorative rose-red arch
+    ctx.strokeStyle = 'rgba(193,68,14,0.4)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2+20, 180, Math.PI, 0); ctx.stroke();
+
+    // Big congrats text
+    ctx.fillStyle = '#E8B88A';
+    ctx.font = 'italic bold 42px Cormorant Garamond, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('You made it!', canvas.width/2, canvas.height/2 - 45);
+
+    ctx.fillStyle = '#F5E6D3';
+    ctx.font = '16px DM Sans, sans-serif';
+    ctx.fillText('You caught the Petra Shuttle.', canvas.width/2, canvas.height/2);
+
+    ctx.fillStyle = 'rgba(245,230,211,0.6)';
+    ctx.font = '13px DM Sans, sans-serif';
+    ctx.fillText('57% of our 246 surveyed visitors were confused about the route.', canvas.width/2, canvas.height/2 + 28);
+    ctx.fillText('Poor signage left over half of visitors disoriented. That\'s why this research exists.', canvas.width/2, canvas.height/2 + 50);
+
+    // Buttons drawn as canvas elements
+    // Restart
+    ctx.fillStyle = '#C1440E';
+    ctx.beginPath(); ctx.roundRect(canvas.width/2 - 130, canvas.height/2 + 80, 115, 38, 5); ctx.fill();
+    ctx.fillStyle = 'white'; ctx.font = 'bold 14px DM Sans';
+    ctx.fillText('Play Again', canvas.width/2 - 73, canvas.height/2 + 104);
+    // Exit (scroll down)
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(canvas.width/2 + 15, canvas.height/2 + 80, 115, 38, 5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#F5E6D3'; ctx.font = 'bold 14px DM Sans';
+    ctx.fillText('See Results', canvas.width/2 + 62, canvas.height/2 + 104);
+    ctx.textAlign = 'left';
+
+    // One-time click listener for the buttons
+    canvas.onclick = function(e) {
+      const rect = canvas.getBoundingClientRect();
+      const mx2 = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const my2 = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const btnY = canvas.height/2 + 80;
+      if (mx2 > canvas.width/2-130 && mx2 < canvas.width/2-15 && my2 > btnY && my2 < btnY+38) {
+        canvas.onclick = null; restartGame();
+      }
+      if (mx2 > canvas.width/2+15 && mx2 < canvas.width/2+130 && my2 > btnY && my2 < btnY+38) {
+        canvas.onclick = null;
+        document.getElementById('findings').scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    return; // stop animation loop
+  }
+
+  requestAnimationFrame(boardingLoop);
+}
+
+function drawIdle() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawBackground(0);
+  ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#F5E6D3'; ctx.font = '28px Cormorant Garamond, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Navigate from the Treasury to the Shuttle Bus Stop', canvas.width/2, canvas.height/2-22);
+  ctx.font = '15px DM Sans'; ctx.fillStyle = '#D4845A';
+  ctx.fillText('Move: Arrow keys / WASD  |  Jump (Up/Space): leap over donkey sellers', canvas.width/2, canvas.height/2+14);
+  ctx.fillText('Duck (Down/S): sneak under misleading signs  |  Reach shade to restore health', canvas.width/2, canvas.height/2+34);
+  ctx.textAlign = 'left';
+  // Draw preview character
+  const prevPlayer = { x: canvas.width/2, y: 252, onGround: true, frame: 0,
+    gender: selectedGender, outfit: selectedOutfit };
+  drawPlayerChar(prevPlayer);
+}
+
+
+// =====================
+// TOUCH D-PAD CONTROLS
+// Multi-touch: each button tracked independently via touch identifier.
+// All inputs write to the shared `input` object — same as keyboard.
+// =====================
+(function() {
+  // Track which touch IDs are held on which buttons
+  const touchMap = {}; // touchId -> elementId
+
+  function setInput(elId, active) {
+    if (elId === 'btn-left')  input.left  = active;
+    if (elId === 'btn-right') input.right = active;
+    if (elId === 'btn-jump')  input.jump  = active;
+    if (elId === 'btn-duck')  input.duck  = active;
+    const el = document.getElementById(elId);
+    if (el) el.classList.toggle('pressed', active);
+  }
+
+  function clearInput(elId) { setInput(elId, false); }
+
+  const dpadIds = ['btn-left','btn-right','btn-jump','btn-duck'];
+
+  // Each D-pad element handles its own touches independently
+  dpadIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener('touchstart', e => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        touchMap[t.identifier] = id;
+        setInput(id, true);
+      }
+    }, { passive: false });
+
+    el.addEventListener('touchend', e => {
+      e.preventDefault();
+      for (const t of e.changedTouches) {
+        if (touchMap[t.identifier] === id) {
+          clearInput(id);
+          delete touchMap[t.identifier];
+        }
+      }
+    }, { passive: false });
+
+    el.addEventListener('touchcancel', e => {
+      for (const t of e.changedTouches) {
+        if (touchMap[t.identifier] === id) {
+          clearInput(id);
+          delete touchMap[t.identifier];
+        }
+      }
+    }, { passive: false });
+
+    // Mouse fallback (desktop testing)
+    el.addEventListener('mousedown', e => { e.preventDefault(); setInput(id, true); });
+    el.addEventListener('mouseup',   e => { clearInput(id); });
+    el.addEventListener('mouseleave',e => { clearInput(id); });
+  });
+
+  // If a finger slides from one button to another, track it
+  document.addEventListener('touchmove', e => {
+    for (const t of e.changedTouches) {
+      const prevId = touchMap[t.identifier];
+      if (!prevId) continue;
+      // Find which D-pad element this finger is now over
+      const el = document.elementFromPoint(t.clientX, t.clientY);
+      const newId = el ? el.closest('[id^="btn-"]')?.id : null;
+      if (newId && newId !== prevId && dpadIds.includes(newId)) {
+        clearInput(prevId);
+        touchMap[t.identifier] = newId;
+        setInput(newId, true);
+      }
+    }
+  }, { passive: true });
+
+  // Safety: clear all inputs if all touches end
+  document.addEventListener('touchend', e => {
+    if (e.touches.length === 0) {
+      dpadIds.forEach(id => clearInput(id));
+    }
+  }, { passive: true });
+
+})();
+
+
+// Init
+drawIdle();
+</script>
+</body>
+</html>
